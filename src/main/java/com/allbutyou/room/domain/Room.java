@@ -46,8 +46,6 @@ public class Room {
     @Column(nullable = false)
     private int lateFee;
 
-    private Long decidedCandidateId;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
