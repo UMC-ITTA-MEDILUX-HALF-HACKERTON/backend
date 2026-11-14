@@ -5,11 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * 컨트롤러 파라미터에 인증된 참가자를 주입한다.
- * TODO: Participant 엔티티가 생기면 파라미터 타입을 Participant(또는 participantId)로 사용.
- */
+/** 컨트롤러의 {@code Member} 파라미터에 X-Participant-Token으로 인증된 멤버를 주입한다. */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CurrentParticipant {
+public @interface CurrentMember {
 }

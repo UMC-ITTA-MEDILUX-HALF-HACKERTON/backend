@@ -2,6 +2,7 @@ package com.allbutyou.common.auth;
 
 import com.allbutyou.common.exception.BusinessException;
 import com.allbutyou.common.exception.ErrorCode;
+import com.allbutyou.room.domain.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -11,23 +12,22 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class CurrentParticipantArgumentResolver implements HandlerMethodArgumentResolver {
+public class CurrentMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        // TODO: Participant 엔티티 생성 후 파라미터 타입 검사 추가
-        //   && Participant.class.isAssignableFrom(parameter.getParameterType())
-        return parameter.hasParameterAnnotation(CurrentParticipant.class);
+        return parameter.hasParameterAnnotation(CurrentMember.class)
+                && Member.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        Object participant = webRequest.getAttribute(ParticipantAuthInterceptor.ATTRIBUTE,
-                RequestAttributes.SCOPE_REQUEST);
-        if (participant == null) {
+        Object member = webRequest.getAttribute(MemberAuthInterceptor.ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
+        if (member == null) {
+            // 인증 제외 경로에서 @CurrentMember를 쓴 경우
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
-        return participant;
+        return member;
     }
 }

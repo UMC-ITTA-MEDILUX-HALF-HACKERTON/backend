@@ -1,7 +1,7 @@
 package com.allbutyou.common.websocket;
 
 public enum WsType {
-    PARTICIPANT_UPDATE,
+    MEMBER_UPDATE,
     LOCATION_UPDATE,
     ARRIVED,
     CANDIDATE_UPDATE,
