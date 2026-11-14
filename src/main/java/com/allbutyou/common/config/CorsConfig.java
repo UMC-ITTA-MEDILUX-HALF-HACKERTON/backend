@@ -1,6 +1,6 @@
 package com.allbutyou.common.config;
 
-import com.allbutyou.common.auth.ParticipantAuthInterceptor;
+import com.allbutyou.common.auth.MemberAuthInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,9 +11,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*")
+                .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*", "https://allbutyou.devnoco.com")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("Content-Type", "Accept", ParticipantAuthInterceptor.HEADER)
+                .allowedHeaders("Content-Type", "Accept", MemberAuthInterceptor.HEADER)
                 .allowCredentials(true)
                 .maxAge(3600);
     }

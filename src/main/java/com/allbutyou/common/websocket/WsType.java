@@ -1,11 +1,11 @@
 package com.allbutyou.common.websocket;
 
 public enum WsType {
-    PARTICIPANT_UPDATE,
+    MEMBER_UPDATE,
     LOCATION_UPDATE,
     ARRIVED,
-    CANDIDATE_UPDATE,
-    VOTE_UPDATE,
-    CONFIRMED,
+    POLL_UPDATE,
+    POLL_DECIDED,
+    GAME_START,
     GAME_RESULT
 }
