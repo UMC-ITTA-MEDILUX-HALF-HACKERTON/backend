@@ -139,7 +139,7 @@ open http://localhost:8080/swagger-ui/index.html
 | 이름 | 역할 | GitHub |
 |---|---|---|
 | 이성훈 | Backend (모임·도착·투표·게임, 공통 설정) | [@shlee811](https://github.com/shlee811) |
-| 이가연 |Backend (위치기반 지도 구현) [@leeeeegayeon](https://github.com/leeeeegayeon) |
+| 이가연 |Backend (위치기반 지도 구현) | [@leeeeegayeon](https://github.com/leeeeegayeon) |
 
 <br>
 
