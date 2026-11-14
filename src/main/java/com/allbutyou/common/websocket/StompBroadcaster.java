@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StompBroadcaster implements Broadcaster {
 
-    private static final String DESTINATION_PREFIX = "/topic/gatherings/";
+    public static final String DESTINATION_PREFIX = "/topic/rooms/";
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -15,7 +15,7 @@ public class StompBroadcaster implements Broadcaster {
     }
 
     @Override
-    public void send(String gatheringCode, WsType type, Object data) {
-        messagingTemplate.convertAndSend(DESTINATION_PREFIX + gatheringCode, WsMessage.of(type, data));
+    public void send(Long roomId, WsType type, Object data) {
+        messagingTemplate.convertAndSend(DESTINATION_PREFIX + roomId, WsMessage.of(type, data));
     }
 }

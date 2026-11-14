@@ -2,6 +2,8 @@ package com.allbutyou.common.auth;
 
 import com.allbutyou.common.exception.BusinessException;
 import com.allbutyou.common.exception.ErrorCode;
+import com.allbutyou.room.domain.Member;
+import com.allbutyou.room.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -14,17 +16,24 @@ import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
 
 @Component
-public class ParticipantAuthInterceptor implements HandlerInterceptor {
+public class MemberAuthInterceptor implements HandlerInterceptor {
 
     public static final String HEADER = "X-Participant-Token";
-    public static final String ATTRIBUTE = ParticipantAuthInterceptor.class.getName() + ".PARTICIPANT";
+    public static final String ATTRIBUTE = MemberAuthInterceptor.class.getName() + ".MEMBER";
 
     private static final List<PublicEndpoint> PUBLIC_ENDPOINTS = List.of(
             PublicEndpoint.of(HttpMethod.GET, "/api/health"),
-            PublicEndpoint.of(HttpMethod.POST, "/api/gatherings"),
-            PublicEndpoint.of(HttpMethod.POST, "/api/gatherings/*/join"),
-            PublicEndpoint.of(HttpMethod.GET, "/api/gatherings/*")
+            PublicEndpoint.of(HttpMethod.POST, "/api/rooms"),
+            PublicEndpoint.of(HttpMethod.POST, "/api/rooms/join"),
+            PublicEndpoint.of(null, "/swagger-ui/**"),
+            PublicEndpoint.of(null, "/v3/api-docs/**")
     );
+
+    private final MemberRepository memberRepository;
+
+    public MemberAuthInterceptor(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -38,13 +47,9 @@ public class ParticipantAuthInterceptor implements HandlerInterceptor {
         if (token == null || token.isBlank()) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
-
-        // TODO: Participant 엔티티/리포지토리 생성 후 토큰으로 참가자 조회
-        //   Participant participant = participantRepository.findByToken(token)
-        //           .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED));
-        //   request.setAttribute(ATTRIBUTE, participant);
-        // 현재는 구조만 잡기 위해 원본 토큰을 저장한다. (검증 없음)
-        request.setAttribute(ATTRIBUTE, token);
+        Member member = memberRepository.findByToken(token.strip())
+                .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "유효하지 않은 토큰입니다."));
+        request.setAttribute(ATTRIBUTE, member);
         return true;
     }
 
@@ -54,6 +59,7 @@ public class ParticipantAuthInterceptor implements HandlerInterceptor {
         return PUBLIC_ENDPOINTS.stream().anyMatch(e -> e.matches(request.getMethod(), container));
     }
 
+    /** method가 null이면 모든 메서드 허용. */
     private record PublicEndpoint(HttpMethod method, PathPattern pattern) {
 
         static PublicEndpoint of(HttpMethod method, String pattern) {
@@ -61,7 +67,7 @@ public class ParticipantAuthInterceptor implements HandlerInterceptor {
         }
 
         boolean matches(String requestMethod, PathContainer path) {
-            return method.matches(requestMethod) && pattern.matches(path);
+            return (method == null || method.matches(requestMethod)) && pattern.matches(path);
         }
     }
 }
