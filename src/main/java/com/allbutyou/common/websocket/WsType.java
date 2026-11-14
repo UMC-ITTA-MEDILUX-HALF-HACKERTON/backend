@@ -6,5 +6,6 @@ public enum WsType {
     ARRIVED,
     POLL_UPDATE,
     POLL_DECIDED,
+    GAME_START,
     GAME_RESULT
 }
