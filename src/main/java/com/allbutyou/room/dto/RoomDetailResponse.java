@@ -15,8 +15,6 @@ public record RoomDetailResponse(
         @Schema(description = "약속 장소 경도", example = "127.0276") double lng,
         @Schema(description = "약속 시각", example = "2026-11-20T19:00:00") LocalDateTime startAt,
         @Schema(description = "지각비", example = "1000") int lateFee,
-        @Schema(description = "확정된 후보 ID (미확정이면 null)", example = "null", nullable = true)
-        Long decidedCandidateId,
         @Schema(description = "모임 생성 시각", example = "2026-11-14T12:00:00") LocalDateTime createdAt,
         @Schema(description = "참가자 목록 (참여 순)") List<MemberResponse> members
 ) {
@@ -24,6 +22,6 @@ public record RoomDetailResponse(
     public static RoomDetailResponse of(Room room, List<MemberResponse> members) {
         return new RoomDetailResponse(room.getId(), room.getCode(), room.getTitle(), room.getPlaceName(),
                 room.getLat(), room.getLng(), room.getStartAt(), room.getLateFee(),
-                room.getDecidedCandidateId(), room.getCreatedAt(), members);
+                room.getCreatedAt(), members);
     }
 }

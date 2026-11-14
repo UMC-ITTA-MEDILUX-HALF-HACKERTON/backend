@@ -85,7 +85,7 @@ public class RoomService {
         }
     }
 
-    // ---- 다른 파트(location, candidate, game)용 조회 메서드 ----
+    // ---- 다른 파트(location, poll, game)용 조회 메서드 ----
 
     public Room getRoom(Long roomId) {
         return roomRepository.findById(roomId)

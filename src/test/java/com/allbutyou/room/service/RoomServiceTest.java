@@ -48,7 +48,6 @@ class RoomServiceTest {
         Room room = roomService.getRoom(res.roomId());
         assertThat(room.getTitle()).isEqualTo("금요일 저녁 모임");
         assertThat(room.getCreatedAt()).isNotNull();
-        assertThat(room.getDecidedCandidateId()).isNull();
 
         Member host = roomService.getMember(res.memberId());
         assertThat(host.getRole()).isEqualTo(MemberRole.HOST);
