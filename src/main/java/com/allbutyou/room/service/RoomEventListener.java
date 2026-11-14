@@ -18,4 +18,9 @@ public class RoomEventListener {
     public void onMemberJoined(MemberJoinedEvent event) {
         broadcaster.send(event.message().roomId(), WsType.MEMBER_UPDATE, event.message());
     }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onMemberArrived(MemberArrivedEvent event) {
+        broadcaster.send(event.roomId(), WsType.ARRIVED, event.arrival());
+    }
 }

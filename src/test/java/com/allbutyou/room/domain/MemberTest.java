@@ -21,6 +21,23 @@ class MemberTest {
     }
 
     @Test
+    void 약속시간보다_5분_늦으면_5분_지각이다() {
+        Member member = Member.member(room, "지영");
+        member.arrive(START_AT.plusMinutes(5));
+        assertThat(member.getLateMinutes()).isEqualTo(5);
+    }
+
+    @Test
+    void 이미_도착했어도_다시_호출하면_시각과_지각분이_갱신된다() {
+        Member member = Member.member(room, "지영");
+        member.arrive(START_AT.plusMinutes(20));
+        member.arrive(START_AT.plusMinutes(3));
+
+        assertThat(member.getArrivedAt()).isEqualTo(START_AT.plusMinutes(3));
+        assertThat(member.getLateMinutes()).isEqualTo(3);
+    }
+
+    @Test
     void 일찍_도착하면_지각은_0분이다() {
         Member member = Member.member(room, "지영");
         member.arrive(START_AT.minusMinutes(30));

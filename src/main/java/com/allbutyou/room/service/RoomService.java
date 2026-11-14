@@ -64,10 +64,25 @@ public class RoomService {
     }
 
     public RoomDetailResponse getRoomDetail(Long roomId, Member requester) {
+        validateParticipant(roomId, requester);
+        return RoomDetailResponse.of(getRoom(roomId), memberResponses(roomId));
+    }
+
+    // ---- 권한 검증 (다른 파트에서도 사용) ----
+
+    /** 토큰 주인이 해당 모임 참가자가 아니면 FORBIDDEN. */
+    public void validateParticipant(Long roomId, Member requester) {
         if (!requester.belongsTo(roomId)) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "참여하지 않은 모임입니다.");
         }
-        return RoomDetailResponse.of(getRoom(roomId), memberResponses(roomId));
+    }
+
+    /** 토큰 주인이 해당 모임의 HOST가 아니면 FORBIDDEN. */
+    public void validateHost(Long roomId, Member requester) {
+        validateParticipant(roomId, requester);
+        if (!requester.isHost()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "주최자만 할 수 있습니다.");
+        }
     }
 
     // ---- 다른 파트(location, candidate, game)용 조회 메서드 ----
@@ -80,6 +95,13 @@ public class RoomService {
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "참가자를 찾을 수 없습니다."));
+    }
+
+    /** 해당 모임 소속 참가자. 없거나 다른 모임 소속이면 NOT_FOUND. */
+    public Member getMemberInRoom(Long roomId, Long memberId) {
+        return memberRepository.findById(memberId)
+                .filter(m -> m.belongsTo(roomId))
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "모임에서 참가자를 찾을 수 없습니다."));
     }
 
     /** 참여 순(id 오름차순). 모임이 없으면 NOT_FOUND. */
